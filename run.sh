@@ -46,7 +46,7 @@ if [ "$MODE" = "docker" ]; then
     echo "==> [Docker] Target: ${TARGET_URL}  (preset: ${PRESET})"
     mkdir -p results
 
-    docker compose run --rm \
+    docker compose run \
         -e API_KEY \
         -e TARGET_URL \
         -e PRESET \
@@ -80,7 +80,7 @@ elif [ "$MODE" = "docker-with-ollama" ]; then
     export TARGET_URL="http://ollama:11434/api/generate"
     export PRESET="ollama"
 
-    docker compose --profile with-ollama run --rm \
+    docker compose --profile with-ollama run \
         -e API_KEY \
         -e TARGET_URL \
         -e PRESET \
