@@ -1,0 +1,35 @@
+services:
+  tester:
+    build: .
+    environment:
+      - API_KEY=${API_KEY:-}
+    volumes:
+      # Persist results to host
+      - ./results:/app/results
+      # Mount custom payloads if you have them
+      - ./custom_payloads_example.json:/app/custom_payloads.json:ro
+    # Default: test against Ollama running on the host.
+    # Override via TARGET_URL and PRESET env vars, or pass args directly.
+    command:
+      - "--url"
+      - "${TARGET_URL:-http://host.docker.internal:11434/api/generate}"
+      - "--preset"
+      - "${PRESET:-ollama}"
+      - "--output"
+      - "/app/results/results.json"
+      - "--verbose"
+    extra_hosts:
+      # Makes "host.docker.internal" resolve to the host machine on Linux
+      - "host.docker.internal:host-gateway"
+
+  # Optional: bundled Ollama so you don't need it on the host
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["with-ollama"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
